@@ -1,0 +1,35 @@
+
+FROM python:3-alpine AS alpine-build
+
+RUN apk update; apk add gcc python3-dev postgresql-dev musl-dev libffi-dev file make
+
+WORKDIR /build
+RUN pip wheel gevent psycopg2-binary greenlet cffi bcrypt
+
+# build our flaskapp module
+ADD hyperapi ./hyperapi
+ADD bin/setup.py .
+RUN python setup.py bdist_wheel
+
+
+FROM python:3-alpine
+
+RUN pip --no-cache-dir install pip --upgrade
+
+COPY --from=alpine-build /build/dist/*.whl /build/*.whl /tmp/
+COPY requirements.txt /tmp
+
+RUN pip install /tmp/*.whl; rm -rf /tmp/*.whl
+
+RUN pip install -r /tmp/requirements.txt
+
+RUN apk update && apk --no-cache add libpq
+
+WORKDIR /opt/api
+
+COPY bin/run.py appconfig.py /opt/api/
+
+expose 3000
+
+# USER www-data
+CMD ["python", "run.py"]

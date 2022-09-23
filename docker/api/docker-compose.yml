@@ -1,0 +1,25 @@
+# Use postgres/example user/password credentials
+#
+version: '3.1'
+
+services:
+  fastapi-api:
+    image:          fastapi-pg-api
+    container_name: fastapi-pg-api
+    # restart:        always
+    build: .
+    ports:
+      - 127.0.0.1:8000:8000
+    networks:
+      - fastapi-api-db-net
+    volumes:
+      - ./data:/data
+
+networks:
+  fastapi-api-db-net:
+    external: true
+
+volumes:
+  fastapi-api-data:
+    external: true
+

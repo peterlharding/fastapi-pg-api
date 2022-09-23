@@ -1,0 +1,38 @@
+
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:13
+    container_name: fastapi-db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - 127.0.0.1:5433:5432
+    volumes:
+      - fastapi-api-pg-data:/var/lib/postgresql/data
+    networks:
+      - fastapi-api-db-net
+
+  adminer:
+    image: adminer
+    container_name: fastapi-adminer
+    restart: always
+    ports:
+      - 127.0.0.1:8080:8080
+    networks:
+      - fastapi-api-db-net
+    depends_on:
+      - db
+
+volumes:
+  fastapi-api-pg-data:
+    external: true
+
+networks:
+  fastapi-api-db-net:
+    external: true
+

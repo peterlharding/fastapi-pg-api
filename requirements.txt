@@ -1,0 +1,14 @@
+bcrypt
+pyjwt
+pyhumps
+python-dateutil
+python-decouple
+python-dotenv
+blinker==1.4
+sqlalchemy
+psycopg2-binary
+pydantic
+starlette
+fastapi
+fastapi_mail
+uvicorn
